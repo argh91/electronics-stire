@@ -1,0 +1,62 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/Index.master" AutoEventWireup="true" CodeFile="PostComment.master.cs" Inherits="PostComment" %>
+
+<%@ Register Assembly="CKEditor.NET" Namespace="CKEditor.NET" TagPrefix="CKEditor" %>
+
+<%@ Register Src="~/manage/UserControls/PostTopDisplay.ascx" TagPrefix="uc1" TagName="PostTopDisplay" %>
+<%@ Register Src="~/manage/UserControls/DisplayMenu.ascx" TagPrefix="uc1" TagName="DisplayMenu" %>
+
+
+
+<asp:Content ID="Content1" ContentPlaceHolderID="Head" runat="Server">
+      <meta name="Keywords" content="<% DataBase db = new DataBase();Response.Write(db.SelectSetting("websitekeyword").ToString());%>" />       
+        <meta name="Description" content="<% Response.Write(db.SelectSetting("websitedesc").ToString());%>" />    
+</asp:Content>
+<asp:Content ID="Content2" ContentPlaceHolderID="Title" runat="Server">
+
+    نمایش مطلب و نظرات
+</asp:Content>
+<asp:Content ID="Content3" ContentPlaceHolderID="Gallery" runat="Server">
+</asp:Content>
+<asp:Content ID="Content4" ContentPlaceHolderID="Content" runat="Server">
+    <div id="content" dir="rtl" style="float:right;width:70%;margin-left:2%;">
+        <asp:ContentPlaceHolder ID="PostAndComments" runat="server"></asp:ContentPlaceHolder>
+        <div id="comment_form">
+            <h3>لطفا نظر خود را مرقوم فرمایید</h3>         
+                <div class="form_row">
+                    <label>نام شما:</label><br />
+                    <asp:TextBox ID="txtName" runat="server"></asp:TextBox>
+                </div>
+
+                <div class="form_row">
+                    <label>پست الکترونیک</label><br />
+                    <asp:TextBox ID="txtEmail" runat="server"></asp:TextBox>
+                </div>
+
+                <div class="form_row">
+                    <label>متن نظر</label><br />
+                    <CKEditor:CKEditorControl ID="CkBody" runat="server"></CKEditor:CKEditorControl>
+                </div>
+                <asp:Button ID="Button1" runat="server" Text="ثبت نظر" CssClass="submit_btn" OnClick="Button1_Click" /><br />
+                <asp:Label ID="lbl" runat="server"></asp:Label>
+               
+          
+
+        </div>
+        <div class="cleaner"></div>
+    </div>
+
+    <div id="sidebar" dir="rtl" style="float:left;">
+        <h3>دسته بندی مطالب</h3>
+        <uc1:DisplayMenu runat="server" ID="DisplayMenu" />
+
+        <div class="cleaner h30"></div>
+
+        <h3>آخرین مطالب</h3>
+        <ul class="recent_post">
+            <uc1:PostTopDisplay runat="server" ID="PostTopDisplay" />
+        </ul>
+    </div>
+    <!-- end of sidebar -->
+    <div class="cleaner"></div>
+</asp:Content>
+

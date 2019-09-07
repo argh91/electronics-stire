@@ -1,0 +1,179 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="Index.master.cs" Inherits="Index" %>
+<%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="System.Data.SqlClient" %>
+
+<%@ Register Src="~/manage/UserControls/LinkDisplay.ascx" TagPrefix="uc1" TagName="LinkDisplay" %>
+<%@ Register Src="~/manage/UserControls/DisplayMenu.ascx" TagPrefix="uc1" TagName="DisplayMenu" %>
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+     <meta name="Keywords" content="<% DataBase db1 = new DataBase();Response.Write(db1.SelectSetting("websitekeyword").ToString());%>" />       
+        <meta name="Description" content="<% Response.Write(db1.SelectSetting("websitedesc").ToString());%>" />    
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <asp:ContentPlaceHolder ID="Head" runat="server"></asp:ContentPlaceHolder>
+    <link href="css/seedcss/main.css" rel="stylesheet" />
+    <link href="css/seedcss/public.css" rel="stylesheet" />
+    <title>
+        <asp:ContentPlaceHolder ID="Title" runat="server"></asp:ContentPlaceHolder>
+    </title>
+   
+    <link href="/css/templatemo_style.css" type="text/css" rel="stylesheet" />
+    <!--اسلايدر-->
+    <link href="/Plugins/slider/css/style.css" rel="stylesheet" />
+    
+    <script type="text/javascript" src="/Plugins/slider/js/jmpress.min.js"></script>
+	
+    <script type="text/javascript" src="/Plugins/slider/js/jquery.jmslideshow.js"></script>
+    <link href="/css/main.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="/css/ddsmoothmenu.css" />
+    <!--منو اصلي -->
+    <script type="text/javascript" src="/js/ddsmoothmenu.js"></script>
+    <!--منو محصولات عمودي-->
+        <script type="text/javascript" src="/js/jquery.simpleaccordion.js"></script>
+    <%        
+                DataBase db=new DataBase();
+                SqlConnection cn=new SqlConnection(DataBase.ConStr);
+                SqlDataReader drr = db.SelectCommand(cn, "sp_img_select", new SqlParameter("@id", 2));
+                while (drr.Read())
+                {
+                    string simg = drr["simageurl"].ToString();
+                    string limg = drr["limageurl"].ToString();
+                    simg = simg.Substring(2);
+                    limg = limg.Substring(2);%>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var img=this.attributes()
+            $('.item').mouseover(function () {
+                $('#zoom_01').attr('src', <%Response.Write(db.SelectCommand("sp_image_change",false,new SqlParameter("@id","")));%> );
+            });
+        });
+    </script>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('#zoom_01').mouseover(function () {
+                    $('#zoom_01').attr('data-zoom-image', '<%Response.Write(limg);%>');
+            });
+        });
+    </script>
+                   <% }
+                drr.Close();
+                db.CloseConnection(cn);
+            %>
+
+</head>
+
+<body id="home">
+    <form runat="server">
+        <div id="templatemo_header_wrapper" >
+            <div id="site_title" >
+            </div>
+            <% if (Session["USERS"] == null)
+               {%>
+                <div style='float:right;font-family:Verdana;margin:2%;'><div  style='right: 0px;float:right;direction:rtl'>
+                <a href="#" class="item" rel="nofollow"><i class="iconfont"></i></a>
+                    <div class='fl header-login' style='float:right;direction:rtl'><a href='/userlogin.aspx' class=js-login style='font-size:large;font-family:Verdana;color:#136850'>&nbsp ورود &nbsp</a>|<a href='/register/register.aspx' class='js-reg' style='font-size:large;font-family:Verdana;color:#136850'>&nbsp ثبت نام &nbsp</a></div><div style='float:right;direction:rtl;' class='header-cart fl js-hc rel'><a href='#' class='header-cart-btn rel'><asp:ImageButton ID="ImageCart" OnClick="ImageCart_Click" ImageUrl="~/images/cart.svg" runat="server" /><span class='js-cart-count cart-count'></span><div class='white-taps abs'></div></a><div class='header-cart-detail abs js-hc-detail'><ul class='header-cart-list js-hc-list'></ul><div class='total-bar' style='display: none;'><span class='mr5 js-item-count'></span>Items<div class='fr' style=''><span class='js-hc-total js-currency'></span></div></div></div></div></div></div>
+               
+           <% }
+
+               else if (Session["USERS"] != null)
+               {
+                   %>
+                <div style='float:right;font-family:Verdana;margin:2%'><div  style='right: 0px;float:right;direction:rtl'><div class='fl header-login' style='float:right;direction:rtl'><asp:LinkButton ID="LinkButton1" runat="server" class='js-login'  style='font-size:large;font-family:Verdana;color:#136850' OnClick="LinkButton1_Click">&nbsp خروج &nbsp</asp:LinkButton>|<a id='taga' href= '/profile.aspx' class='js-reg' style='font-size:large;font-family:Verdana;color:gray '>&nbsp حساب كاربري &nbsp</a></div><div style='float:right;direction:rtl;' class='header-cart fl js-hc rel'><a href='#' class='header-cart-btn rel'><asp:ImageButton ID="ImageAddCart" ImageUrl="~/images/cart.svg" OnClick="ImageAddCart_Click" runat="server" /><span class='js-cart-count cart-count'></span><div class='white-taps abs'></div></a><div class='header-cart-detail abs js-hc-detail'><ul class='header-cart-list js-hc-list'></ul><div class='total-bar' style='display: none;'><span class='mr5 js-item-count'></span>Items<div class='fr' style=''><span class='js-hc-total js-currency'></span></div></div></div></div></div>
+                </div>
+            <%   
+            }       
+             %>
+            <div id="templatemo_menu" class="ddsmoothmenu"style="margin:2%;">
+                <uc1:DisplayMenu runat="server" ID="DisplayMenu" />
+                <br style="clear: left" />
+            </div>
+            <div class="cleaner"></div>
+        </div>
+        <!-- END of templatemo_header_wrapper -->
+        <div id="templatemo_slider">
+<%--        <div>--%>
+            <asp:ContentPlaceHolder ID="Gallery" runat="server"></asp:ContentPlaceHolder>
+        </div>
+        <div id="templatemo_main">
+            <asp:ContentPlaceHolder ID="Content" runat="server"></asp:ContentPlaceHolder>
+        </div>
+        <!-- END of templatemo_main -->
+            <footer class="clear" id="footer" >
+        <div class="be-footer"></div>
+        <div class="footer__tips--outer">
+            <div class="com-width center footer__tips f14" style="direction:rtl">
+                <a href="#" class="item item-center rightBorder" rel="nofollow"><i class="iconfont"></i>مرکز پشتیبانی</a>
+                <a href="#" class="item" rel="nofollow">تماس با ما</a>
+                <a href="#" class="item rightBorder" rel="nofollow"><i class="iconfont"></i>راهنمای خرید</a>
+            </div>
+        </div>
+        <div class="footer--info com-width center f14 c-9e" style="direction:rtl">
+            <div class="block">
+                <ul>
+                    <li class="title">اخبار امجد</li>
+                    <li><a href="#" title="Distributors" rel="nofollow">توزیع کنندگان ما</a></li>
+                    <li><a href="#" title="Designers" rel="nofollow">طراحان ما</a></li>
+                    <li><a href="#" title="Careers" target="_blank" rel="nofollow">فرصت های شغلی ما</a></li>
+                    <li><a href="#" title="Site Map" target="_blank" rel="nofollow">نقشه سایت</a></li>
+                </ul>
+            </div>
+            <div class="block">
+                <ul>
+                    <li class="title"> تماس با ما </li>
+                    <li><a href="#" title="Customer Service" rel="nofollow">خدمات مشتریان</a></li>
+                    <li><a href="#" title="Technical Support" rel="nofollow">پشتیبانی فنی</a></li>
+                    <li><a href="#" title="Reach Us" rel="nofollow">ارتباط با ما</a></li>
+                </ul>
+            </div>
+            <div class="block">
+                <ul class="last-block">
+                    <li class="title">شرایط استفاده</li>
+                    <li><a href="#" title="" rel="nofollow">راهنمای سفارش</a></li>
+                    <li><a href="#" title="" rel="nofollow">راهنمای ارسال</a></li>
+                    <li><a href="#" title="" rel="nofollow">راهنمای پرداخت</a></li>
+                    <li><a href="#" title="" rel="nofollow">شرایط گارانتی محصولات</a></li>
+                </ul>
+            </div>
+            <div class="block search">
+                <ul>
+                    <li class="title">عضویت در خبرنامه</li>
+                    <li class="sign clear">
+                        <asp:TextBox ID="txtNews" CssClass="sign-input fl" Width="63%" runat="server" placeholder="ایمیل خود را وارد کنید" ></asp:TextBox>
+                        <asp:Button ID="butNews" runat="server" OnClick="butNews_Click" Width="30%" CssClass="fa fa-chevron-right btn-sign hover-type-all" Text="عضویت"></asp:Button>
+                    </li>
+                    <li class="social f16 foot-sns-li">
+
+                    <a href="#" target="_blank" title="" class="sns__ico sns--google-plus">
+                        <img alt="follow me on google plus" src="https://c866088.ssl.cf3.rackcdn.com/assets/googleplus30x30.png" /> 
+                    </a>
+                    <a href="#" title="" target="_blank" class="sns__ico sns--instagram"> <img alt="follow me on instagram" src="https://c866088.ssl.cf3.rackcdn.com/assets/instagram30x30.png" />
+                    </a>
+                    <a href="#" title="" target="_blank" >
+                        <img alt="follow me on Twitter" src="https://c866088.ssl.cf3.rackcdn.com/assets/twitter30x30.png" />
+                    </a>
+                    <a href="#" target="_blank" title="" class="sns__ico sns--facebook">
+                        <img alt="follow me on facebook" src="https://c866088.ssl.cf3.rackcdn.com/assets/facebook30x30.png" />
+                    </a>
+ 
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer--copyright f14 com-width center">
+            <span style="text-align:center;direction:rtl"><p>Copyright © 2015-2016  كليه حقوق مادي و معنوي براي امجد بازار محفوظ است. </p> </span>
+        </div>
+        <script type="text/javascript" src="./Seeed Studio Bazaar, Boost ideas, Extend the Reach - Seeed_files/1.js" async=""></script>
+    </footer>
+        <a href="#" class="back-to-top" title="Back to top" style="display: none;"><i class="fa fa-angle-up"></i></a>
+        <!-- END of templatemo_footer -->
+
+
+        <script type='text/javascript' src='js/logging.js'></script>
+
+    </form>
+</body>
+</html>
